@@ -1,9 +1,9 @@
 /**
  * Viral Content & Script Generator - Backend
  * Node.js / Express server that securely proxies requests to the
- * NVIDIA NIM API (OpenAI-compatible chat completions endpoint).
+ * Groq API (OpenAI-compatible chat completions endpoint).
  *
- * The NVIDIA_API_KEY is read from environment variables ONLY.
+ * The GROQ_API_KEY is read from environment variables ONLY.
  * It is never sent to, or exposed on, the frontend.
  */
 
@@ -20,8 +20,8 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const NVIDIA_API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
-const MODEL = 'meta/llama-3.1-70b-instruct';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL = 'llama-3.1-70b-versatile';
 
 /* ------------------------------------------------------------------ */
 /* Prompt builders                                                     */
@@ -141,9 +141,9 @@ app.post('/api/generate', async (req, res) => {
       return res.status(400).json({ error: 'Please provide a topic or product name.' });
     }
 
-    if (!process.env.NVIDIA_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
       return res.status(500).json({
-        error: 'Server misconfiguration: NVIDIA_API_KEY environment variable is not set.'
+        error: 'Server misconfiguration: GROQ_API_KEY environment variable is not set.'
       });
     }
 
@@ -163,9 +163,9 @@ app.post('/api/generate', async (req, res) => {
       max_tokens: 1600
     };
 
-    const response = await axios.post(NVIDIA_API_URL, payload, {
+    const response = await axios.post(GROQ_API_URL, payload, {
       headers: {
-        Authorization: `Bearer ${process.env.NVIDIA_API_KEY}`,
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         'Content-Type': 'application/json',
         Accept: 'application/json'
       },
@@ -192,7 +192,7 @@ app.post('/api/generate', async (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', keyConfigured: Boolean(process.env.NVIDIA_API_KEY) });
+  res.json({ status: 'ok', keyConfigured: Boolean(process.env.GROQ_API_KEY) });
 });
 
 // Fallback: serve the frontend for any other GET route.
@@ -202,7 +202,7 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Viral Content Generator running at http://localhost:${PORT}`);
-  if (!process.env.NVIDIA_API_KEY) {
-    console.warn('⚠️  Warning: NVIDIA_API_KEY is not set. Set it in a .env file or your environment.');
+  if (!process.env.GROQ_API_KEY) {
+    console.warn('⚠️  Warning: GROQ_API_KEY is not set. Set it in a .env file or your environment.');
   }
 });
