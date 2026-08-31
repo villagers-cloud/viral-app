@@ -1,7 +1,7 @@
 {
   "name": "viral-content-generator",
-  "version": "1.0.0",
-  "description": "AI-powered Viral Content & Script Generator using the NVIDIA NIM API",
+  "version": "1.2.0",
+  "description": "AI-powered Viral Content & Script Generator using the Groq API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -13,6 +13,7 @@
     "axios": "^1.7.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0"
   }
 }
