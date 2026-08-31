@@ -99,7 +99,7 @@
     margin-bottom: 6px;
   }
 
-  input[type="text"], select {
+  input[type="text"], select, textarea {
     width: 100%;
     padding: 12px 14px;
     background: var(--bg-soft);
@@ -108,15 +108,25 @@
     color: var(--text);
     font-size: 14px;
     outline: none;
+    font-family: inherit;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
 
-  input[type="text"]:focus, select:focus {
+  input[type="text"]:focus, select:focus, textarea:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(124,92,255,0.25);
   }
 
   select { cursor: pointer; }
+  textarea { resize: vertical; min-height: 60px; }
+
+  .counter {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    text-align: right;
+  }
+  .counter.warn { color: var(--danger); }
 
   .btn {
     display: inline-flex;
@@ -157,6 +167,11 @@
     color: var(--text);
   }
 
+  .btn-small {
+    padding: 6px 10px;
+    font-size: 11.5px;
+  }
+
   .btn-canva {
     width: 100%;
     background: linear-gradient(90deg, #00c4cc, #7d2ae8);
@@ -171,6 +186,27 @@
   .results { display: none; }
   .results.visible { display: block; }
 
+  .results-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .tag-group { margin-right: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(34,211,238,0.15);
+    border: 1px solid rgba(34,211,238,0.4);
+    color: #9be9f7;
+  }
+
   .section-card {
     margin-bottom: 20px;
     position: relative;
@@ -181,6 +217,8 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .section-title {
@@ -199,7 +237,7 @@
     box-shadow: 0 0 8px var(--accent);
   }
 
-  .section-actions { display: flex; gap: 8px; }
+  .section-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
   .section-body {
     white-space: pre-wrap;
@@ -285,9 +323,139 @@
     margin-top: 30px;
   }
 
+  /* Progress bar */
+  .progress-wrap { margin-top: 18px; display: none; }
+  .progress-wrap.active { display: block; }
+  .progress-track {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-soft);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: width 0.4s ease;
+  }
+  .progress-status {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  /* Tone blend slider */
+  .slider-row { margin-top: 16px; display: none; }
+  .slider-row.active { display: block; }
+  .slider-row input[type="range"] { width: 100%; accent-color: var(--primary); }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  /* History */
+  .history-card { margin-bottom: 28px; }
+  .history-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 10px;
+  }
+  .history-head h3 { margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .history-head .muted { color: var(--text-dim); font-weight: 400; font-size: 12px; }
+  .history-list {
+    margin-top: 14px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .history-list.open { display: flex; }
+  .history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-soft);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    gap: 10px;
+  }
+  .history-item:hover { border-color: var(--primary); }
+  .history-item-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .history-item-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .history-item-meta { font-size: 11.5px; color: var(--text-dim); }
+  .history-item-actions button {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .history-item-actions button:hover { color: var(--danger); }
+  .history-empty { font-size: 13px; color: var(--text-dim); text-align: center; padding: 10px 0; }
+
+  /* Refine box */
+  .refine-box {
+    display: none;
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--bg-soft);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+  }
+  .refine-box.open { display: block; }
+  .refine-box .refine-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  /* Variations */
+  .variations-box {
+    display: none;
+    margin-top: 14px;
+    gap: 10px;
+    flex-direction: column;
+  }
+  .variations-box.open { display: flex; }
+  .variation-option {
+    background: var(--bg-soft);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .variation-option-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .variation-option button { flex-shrink: 0; }
+
   @media (max-width: 640px) {
     .field-row { grid-template-columns: 1fr; }
     header.hero h1 { font-size: 26px; }
+    .variation-option { flex-direction: column; }
   }
 </style>
 </head>
@@ -301,7 +469,8 @@
 
     <section class="card form-card">
       <label for="topic">Topic / Product Name</label>
-      <input type="text" id="topic" placeholder="e.g. Handmade leather wallets, Personal finance tips, New coffee shop launch..." />
+      <input type="text" id="topic" maxlength="200" placeholder="e.g. Handmade leather wallets, Personal finance tips, New coffee shop launch..." />
+      <div class="counter" id="topicCounter">0 / 200 characters</div>
 
       <div class="field-row">
         <div>
@@ -332,9 +501,67 @@
         </div>
       </div>
 
+      <div class="field-row">
+        <div>
+          <label for="platform">Platform</label>
+          <select id="platform">
+            <option value="General" selected>General / Any Platform</option>
+            <option value="Instagram Reels">Instagram Reels</option>
+            <option value="YouTube Shorts">YouTube Shorts</option>
+            <option value="TikTok">TikTok</option>
+          </select>
+        </div>
+        <div>
+          <label for="duration">Video Duration</label>
+          <select id="duration">
+            <option value="15 seconds">15 seconds</option>
+            <option value="30 seconds" selected>30 seconds</option>
+            <option value="45 seconds">45 seconds</option>
+            <option value="60 seconds">60 seconds</option>
+            <option value="90 seconds">90 seconds</option>
+            <option value="2 minutes">2 minutes</option>
+            <option value="3+ minutes">3+ minutes</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <label for="toneSecondary">Blend With (optional)</label>
+        <select id="toneSecondary">
+          <option value="" selected>None</option>
+          <option value="Viral">Viral</option>
+          <option value="Funny">Funny</option>
+          <option value="Professional">Professional</option>
+          <option value="Educational">Educational</option>
+        </select>
+      </div>
+
+      <div class="slider-row" id="intensityRow">
+        <div class="slider-label">
+          <span>Blend Intensity</span>
+          <span id="intensityValue">30%</span>
+        </div>
+        <input type="range" id="toneIntensity" min="10" max="90" value="30" step="5" />
+      </div>
+
       <button class="btn btn-primary" id="generateBtn">
         <span id="generateBtnLabel">✨ Generate Content</span>
       </button>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-status" id="progressStatus">Analyzing your topic...</div>
+      </div>
+    </section>
+
+    <section class="card history-card">
+      <div class="history-head" id="historyToggle">
+        <h3>🕑 History <span class="muted" id="historyCount"></span></h3>
+        <button class="btn btn-ghost btn-small" id="clearHistoryBtn">Clear All</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty" id="historyEmpty">No saved generations yet. Your generated content will appear here automatically.</div>
+      </div>
     </section>
 
     <div id="emptyState" class="card empty-state">
@@ -343,99 +570,200 @@
 
     <section class="results" id="results">
 
+      <div class="results-toolbar">
+        <div class="tag-group">
+          <span class="tag" id="platformTag" style="display:none;"></span>
+          <span class="tag" id="durationTag" style="display:none;"></span>
+        </div>
+        <button class="btn btn-ghost" id="copyAllBtn">📋 Copy All</button>
+      </div>
+
       <div class="card section-card">
         <div class="section-head">
           <div class="section-title"><span class="dot"></span> Viral Content Idea</div>
           <div class="section-actions">
-            <button class="btn btn-ghost" data-copy="idea">Copy</button>
-            <button class="btn btn-ghost" data-regen="idea">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-copy="idea">Copy</button>
+            <button class="btn btn-ghost btn-small" data-regen="idea">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-refine-toggle="idea">✏️ Refine</button>
+            <button class="btn btn-ghost btn-small" data-variations="idea_variations">🎲 3 Options</button>
           </div>
         </div>
         <div class="section-body" id="out-idea"></div>
+        <div class="counter" id="count-idea"></div>
+        <div class="refine-box" id="refine-idea">
+          <label>Tell the AI how to change this</label>
+          <textarea id="refine-input-idea" maxlength="300" placeholder="e.g. Make it more shocking, focus on the price angle..."></textarea>
+          <div class="refine-actions">
+            <button class="btn btn-ghost btn-small" data-refine-cancel="idea">Cancel</button>
+            <button class="btn btn-ghost btn-small" data-refine-submit="idea">Apply</button>
+          </div>
+        </div>
+        <div class="variations-box" id="variations-idea"></div>
       </div>
 
       <div class="card section-card">
         <div class="section-head">
           <div class="section-title"><span class="dot"></span> Video Hook</div>
           <div class="section-actions">
-            <button class="btn btn-ghost" data-copy="hook">Copy</button>
-            <button class="btn btn-ghost" data-regen="hook_script">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-copy="hook">Copy</button>
+            <button class="btn btn-ghost btn-small" data-regen="hook_script">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-refine-toggle="hook">✏️ Refine</button>
+            <button class="btn btn-ghost btn-small" data-variations="hook_variations">🎲 3 Options</button>
           </div>
         </div>
         <div class="section-body" id="out-hook"></div>
+        <div class="counter" id="count-hook"></div>
+        <div class="refine-box" id="refine-hook">
+          <label>Tell the AI how to change this</label>
+          <textarea id="refine-input-hook" maxlength="300" placeholder="e.g. Make it a question instead..."></textarea>
+          <div class="refine-actions">
+            <button class="btn btn-ghost btn-small" data-refine-cancel="hook">Cancel</button>
+            <button class="btn btn-ghost btn-small" data-refine-submit="hook">Apply</button>
+          </div>
+        </div>
+        <div class="variations-box" id="variations-hook"></div>
       </div>
 
       <div class="card section-card">
         <div class="section-head">
           <div class="section-title"><span class="dot"></span> Full Script</div>
           <div class="section-actions">
-            <button class="btn btn-ghost" data-copy="script">Copy</button>
-            <button class="btn btn-ghost" data-regen="hook_script">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-copy="script">Copy</button>
+            <button class="btn btn-ghost btn-small" data-regen="hook_script">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-refine-toggle="script">✏️ Refine</button>
           </div>
         </div>
         <div class="section-body" id="out-script"></div>
+        <div class="counter" id="count-script"></div>
+        <div class="refine-box" id="refine-script">
+          <label>Tell the AI how to change this</label>
+          <textarea id="refine-input-script" maxlength="300" placeholder="e.g. Add a demo step, make the CTA stronger..."></textarea>
+          <div class="refine-actions">
+            <button class="btn btn-ghost btn-small" data-refine-cancel="script">Cancel</button>
+            <button class="btn btn-ghost btn-small" data-refine-submit="script">Apply</button>
+          </div>
+        </div>
       </div>
 
       <div class="card section-card">
         <div class="section-head">
           <div class="section-title"><span class="dot"></span> Catchy Title</div>
           <div class="section-actions">
-            <button class="btn btn-ghost" data-copy="title">Copy</button>
-            <button class="btn btn-ghost" data-regen="title">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-copy="title">Copy</button>
+            <button class="btn btn-ghost btn-small" data-regen="title">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-refine-toggle="title">✏️ Refine</button>
           </div>
         </div>
         <div class="section-body" id="out-title"></div>
+        <div class="counter" id="count-title"></div>
+        <div class="refine-box" id="refine-title">
+          <label>Tell the AI how to change this</label>
+          <textarea id="refine-input-title" maxlength="300" placeholder="e.g. Make it shorter, add a number..."></textarea>
+          <div class="refine-actions">
+            <button class="btn btn-ghost btn-small" data-refine-cancel="title">Cancel</button>
+            <button class="btn btn-ghost btn-small" data-refine-submit="title">Apply</button>
+          </div>
+        </div>
       </div>
 
       <div class="card section-card">
         <div class="section-head">
           <div class="section-title"><span class="dot"></span> SEO Description</div>
           <div class="section-actions">
-            <button class="btn btn-ghost" data-copy="description">Copy</button>
-            <button class="btn btn-ghost" data-regen="description">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-copy="description">Copy</button>
+            <button class="btn btn-ghost btn-small" data-regen="description">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-refine-toggle="description">✏️ Refine</button>
           </div>
         </div>
         <div class="section-body" id="out-description"></div>
+        <div class="counter" id="count-description"></div>
+        <div class="refine-box" id="refine-description">
+          <label>Tell the AI how to change this</label>
+          <textarea id="refine-input-description" maxlength="300" placeholder="e.g. Add more keywords about fitness..."></textarea>
+          <div class="refine-actions">
+            <button class="btn btn-ghost btn-small" data-refine-cancel="description">Cancel</button>
+            <button class="btn btn-ghost btn-small" data-refine-submit="description">Apply</button>
+          </div>
+        </div>
       </div>
 
       <div class="card section-card">
         <div class="section-head">
           <div class="section-title"><span class="dot"></span> Viral Hashtags</div>
           <div class="section-actions">
-            <button class="btn btn-ghost" data-copy="hashtags">Copy</button>
-            <button class="btn btn-ghost" data-regen="hashtags">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-copy="hashtags">Copy</button>
+            <button class="btn btn-ghost btn-small" data-regen="hashtags">🔄 Regenerate</button>
+            <button class="btn btn-ghost btn-small" data-refine-toggle="hashtags">✏️ Refine</button>
           </div>
         </div>
         <div class="section-body hashtag-body" id="out-hashtags"></div>
+        <div class="counter" id="count-hashtags"></div>
+        <div class="refine-box" id="refine-hashtags">
+          <label>Tell the AI how to change this</label>
+          <textarea id="refine-input-hashtags" maxlength="300" placeholder="e.g. Focus more on niche tags, fewer broad ones..."></textarea>
+          <div class="refine-actions">
+            <button class="btn btn-ghost btn-small" data-refine-cancel="hashtags">Cancel</button>
+            <button class="btn btn-ghost btn-small" data-refine-submit="hashtags">Apply</button>
+          </div>
+        </div>
       </div>
 
       <button class="btn btn-canva" id="canvaBtn">🎨 Design Graphics in Canva</button>
 
     </section>
 
-    <p class="footer-note">Powered by NVIDIA NIM · meta/llama-3.1-70b-instruct</p>
+    <p class="footer-note">Powered by Groq · llama-3.1-70b-versatile</p>
   </div>
 
   <div class="toast" id="toast"></div>
 
 <script>
+  const MAX_TOPIC_LENGTH = 200;
+  const HISTORY_KEY = 'viralContentHistory';
+  const HISTORY_LIMIT = 20;
+
   const state = {
     topic: '',
     language: 'English',
     tone: 'Viral',
+    toneSecondary: null,
+    toneIntensity: 0,
+    platform: 'General',
+    duration: '30 seconds',
     content: { idea: '', hook: '', script: '', title: '', description: '', hashtags: '' }
   };
 
   const el = (id) => document.getElementById(id);
+
   const topicInput = el('topic');
+  const topicCounter = el('topicCounter');
   const languageSelect = el('language');
   const toneSelect = el('tone');
+  const platformSelect = el('platform');
+  const durationSelect = el('duration');
+  const toneSecondarySelect = el('toneSecondary');
+  const intensityRow = el('intensityRow');
+  const toneIntensityInput = el('toneIntensity');
+  const intensityValue = el('intensityValue');
+
   const generateBtn = el('generateBtn');
   const generateBtnLabel = el('generateBtnLabel');
   const resultsSection = el('results');
   const emptyState = el('emptyState');
   const canvaBtn = el('canvaBtn');
+  const copyAllBtn = el('copyAllBtn');
+  const platformTag = el('platformTag');
+  const durationTag = el('durationTag');
   const toast = el('toast');
+
+  const progressWrap = el('progressWrap');
+  const progressFill = el('progressFill');
+  const progressStatus = el('progressStatus');
+
+  const historyToggle = el('historyToggle');
+  const historyList = el('historyList');
+  const historyCount = el('historyCount');
+  const clearHistoryBtn = el('clearHistoryBtn');
 
   const OUTPUT_IDS = {
     idea: 'out-idea',
@@ -446,6 +774,19 @@
     hashtags: 'out-hashtags'
   };
 
+  const COUNT_IDS = {
+    idea: 'count-idea',
+    hook: 'count-hook',
+    script: 'count-script',
+    title: 'count-title',
+    description: 'count-description',
+    hashtags: 'count-hashtags'
+  };
+
+  /* ---------------------------------------------------------------- */
+  /* Toast                                                              */
+  /* ---------------------------------------------------------------- */
+
   function showToast(message, type) {
     toast.textContent = message;
     toast.className = 'toast show' + (type ? ' ' + type : '');
@@ -453,54 +794,191 @@
     showToast._t = setTimeout(() => { toast.className = 'toast'; }, 3200);
   }
 
-  function renderField(key, value) {
-    const target = el(OUTPUT_IDS[key]);
-    if (!target) return;
+  /* ---------------------------------------------------------------- */
+  /* Rendering                                                          */
+  /* ---------------------------------------------------------------- */
+
+  function updateCounts(key, value) {
+    const countEl = el(COUNT_IDS[key]);
+    if (!countEl) return;
 
     if (key === 'hashtags') {
-      target.innerHTML = '';
-      const tags = String(value || '')
-        .split(/\s+/)
-        .map((t) => t.trim())
-        .filter(Boolean);
-      tags.forEach((tag) => {
-        const chip = document.createElement('span');
-        chip.className = 'hashtag-chip';
-        chip.textContent = tag.startsWith('#') ? tag : '#' + tag;
-        target.appendChild(chip);
-      });
-    } else {
-      target.textContent = value || '';
+      const tagCount = String(value || '').split(/\s+/).filter(Boolean).length;
+      countEl.textContent = tagCount ? `${tagCount} hashtags` : '';
+      return;
     }
+
+    const text = String(value || '').trim();
+    if (!text) {
+      countEl.textContent = '';
+      return;
+    }
+    const words = text.split(/\s+/).filter(Boolean).length;
+    const chars = text.length;
+    countEl.textContent = `${words} words · ${chars} characters`;
+  }
+
+  function renderField(key, value) {
+    const target = el(OUTPUT_IDS[key]);
+    if (target) {
+      if (key === 'hashtags') {
+        target.innerHTML = '';
+        const tags = String(value || '').split(/\s+/).map((t) => t.trim()).filter(Boolean);
+        tags.forEach((tag) => {
+          const chip = document.createElement('span');
+          chip.className = 'hashtag-chip';
+          chip.textContent = tag.startsWith('#') ? tag : '#' + tag;
+          target.appendChild(chip);
+        });
+      } else {
+        target.textContent = value || '';
+      }
+    }
+    updateCounts(key, value);
   }
 
   function renderAll(content) {
     Object.keys(OUTPUT_IDS).forEach((key) => renderField(key, content[key]));
   }
 
-  function setSkeleton(ids, on) {
-    ids.forEach((key) => {
+  function setSkeleton(keys) {
+    keys.forEach((key) => {
       const target = el(OUTPUT_IDS[key]);
       if (!target) return;
-      if (on) {
-        target.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
-      }
+      target.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
     });
   }
 
-  async function callGenerateApi(section, context) {
+  function updateTags() {
+    if (state.platform && state.platform !== 'General') {
+      platformTag.textContent = state.platform;
+      platformTag.style.display = 'inline-block';
+    } else {
+      platformTag.style.display = 'none';
+    }
+    if (state.duration) {
+      durationTag.textContent = state.duration;
+      durationTag.style.display = 'inline-block';
+    } else {
+      durationTag.style.display = 'none';
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Form field wiring                                                  */
+  /* ---------------------------------------------------------------- */
+
+  topicInput.addEventListener('input', () => {
+    const len = topicInput.value.length;
+    topicCounter.textContent = `${len} / ${MAX_TOPIC_LENGTH} characters`;
+    topicCounter.classList.toggle('warn', len >= MAX_TOPIC_LENGTH);
+  });
+
+  toneSecondarySelect.addEventListener('change', () => {
+    intensityRow.classList.toggle('active', Boolean(toneSecondarySelect.value));
+  });
+
+  toneIntensityInput.addEventListener('input', () => {
+    intensityValue.textContent = `${toneIntensityInput.value}%`;
+  });
+
+  /* ---------------------------------------------------------------- */
+  /* Progress simulation (based on estimated output length)            */
+  /* ---------------------------------------------------------------- */
+
+  const ESTIMATED_DURATIONS_MS = {
+    all: 9000,
+    idea: 2500,
+    hook_script: 5000,
+    title: 1800,
+    description: 2800,
+    hashtags: 1800,
+    idea_variations: 4000,
+    hook_variations: 4000,
+    refine: 2500
+  };
+
+  const ALL_STAGE_MESSAGES = [
+    'Analyzing your topic...',
+    'Crafting the viral idea...',
+    'Writing the hook...',
+    'Building the full script...',
+    'Polishing the title...',
+    'Optimizing the SEO description...',
+    'Generating hashtags...',
+    'Almost done...'
+  ];
+
+  let progressTimer = null;
+  let progressStageTimer = null;
+
+  function startProgress(section) {
+    const duration = ESTIMATED_DURATIONS_MS[section] || 3500;
+    progressWrap.classList.add('active');
+
+    let pct = 4;
+    const cap = 92;
+    const stepMs = 200;
+    const increment = (cap - pct) / (duration / stepMs);
+    progressFill.style.width = pct + '%';
+
+    clearInterval(progressTimer);
+    progressTimer = setInterval(() => {
+      pct = Math.min(cap, pct + increment);
+      progressFill.style.width = pct + '%';
+    }, stepMs);
+
+    clearInterval(progressStageTimer);
+    if (section === 'all') {
+      let stageIndex = 0;
+      progressStatus.textContent = ALL_STAGE_MESSAGES[0];
+      progressStageTimer = setInterval(() => {
+        stageIndex = Math.min(ALL_STAGE_MESSAGES.length - 1, stageIndex + 1);
+        progressStatus.textContent = ALL_STAGE_MESSAGES[stageIndex];
+      }, Math.max(700, duration / ALL_STAGE_MESSAGES.length));
+    } else {
+      progressStatus.textContent = 'Generating...';
+    }
+  }
+
+  function finishProgress() {
+    clearInterval(progressTimer);
+    clearInterval(progressStageTimer);
+    progressFill.style.width = '100%';
+    setTimeout(() => {
+      progressWrap.classList.remove('active');
+      progressFill.style.width = '0%';
+    }, 500);
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* API                                                                */
+  /* ---------------------------------------------------------------- */
+
+  async function callGenerateApi(section, extra) {
     const topic = topicInput.value.trim();
-    const language = languageSelect.value;
-    const tone = toneSelect.value;
 
     if (!topic) {
       showToast('Please enter a topic or product name first.', 'error');
       topicInput.focus();
       return null;
     }
+    if (topic.length > MAX_TOPIC_LENGTH) {
+      showToast(`Topic must be ${MAX_TOPIC_LENGTH} characters or fewer.`, 'error');
+      return null;
+    }
 
-    const body = { topic, language, tone, section: section || 'all' };
-    if (context) body.context = context;
+    const body = {
+      topic,
+      language: languageSelect.value,
+      tone: toneSelect.value,
+      toneSecondary: toneSecondarySelect.value || null,
+      toneIntensity: toneSecondarySelect.value ? Number(toneIntensityInput.value) : 0,
+      platform: platformSelect.value,
+      duration: durationSelect.value,
+      section: section || 'all',
+      ...extra
+    };
 
     try {
       const res = await fetch('/api/generate', {
@@ -508,6 +986,12 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
+
+      if (res.status === 429) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "You're generating too quickly. Please wait a few minutes and try again.");
+      }
+
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || 'Something went wrong while generating content.');
@@ -519,6 +1003,10 @@
     }
   }
 
+  /* ---------------------------------------------------------------- */
+  /* Generate (full)                                                    */
+  /* ---------------------------------------------------------------- */
+
   async function generateAll() {
     const topic = topicInput.value.trim();
     if (!topic) {
@@ -526,17 +1014,23 @@
       topicInput.focus();
       return;
     }
+    if (topic.length > MAX_TOPIC_LENGTH) {
+      showToast(`Topic must be ${MAX_TOPIC_LENGTH} characters or fewer.`, 'error');
+      return;
+    }
 
     generateBtn.disabled = true;
     generateBtnLabel.innerHTML = '<span class="spinner"></span> Generating...';
     emptyState.style.display = 'none';
     resultsSection.classList.add('visible');
-    setSkeleton(Object.keys(OUTPUT_IDS), true);
+    setSkeleton(Object.keys(OUTPUT_IDS));
+    startProgress('all');
 
     const data = await callGenerateApi('all', null);
 
     generateBtn.disabled = false;
     generateBtnLabel.textContent = '✨ Generate Content';
+    finishProgress();
 
     if (!data) {
       resultsSection.classList.remove('visible');
@@ -547,6 +1041,10 @@
     state.topic = topic;
     state.language = languageSelect.value;
     state.tone = toneSelect.value;
+    state.toneSecondary = toneSecondarySelect.value || null;
+    state.toneIntensity = state.toneSecondary ? Number(toneIntensityInput.value) : 0;
+    state.platform = platformSelect.value;
+    state.duration = durationSelect.value;
     state.content = {
       idea: data.idea || '',
       hook: data.hook || '',
@@ -557,8 +1055,14 @@
     };
 
     renderAll(state.content);
+    updateTags();
+    saveToHistory();
     showToast('Content generated successfully!', 'success');
   }
+
+  /* ---------------------------------------------------------------- */
+  /* Regenerate (single section)                                       */
+  /* ---------------------------------------------------------------- */
 
   async function regenerateSection(section, btn) {
     if (!state.topic) {
@@ -570,28 +1074,136 @@
     const originalLabel = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>';
-    setSkeleton(affectedKeys, true);
+    setSkeleton(affectedKeys);
 
-    const data = await callGenerateApi(section, state.content);
+    const data = await callGenerateApi(section, { context: state.content });
 
     btn.disabled = false;
     btn.innerHTML = originalLabel;
 
     if (!data) {
-      // Restore previous values on failure
       affectedKeys.forEach((key) => renderField(key, state.content[key]));
       return;
     }
 
     affectedKeys.forEach((key) => {
-      if (data[key] !== undefined) {
-        state.content[key] = data[key];
-      }
+      if (data[key] !== undefined) state.content[key] = data[key];
     });
-
     affectedKeys.forEach((key) => renderField(key, state.content[key]));
     showToast('Section regenerated!', 'success');
   }
+
+  /* ---------------------------------------------------------------- */
+  /* Refine with instructions                                          */
+  /* ---------------------------------------------------------------- */
+
+  function toggleRefineBox(key) {
+    const box = el('refine-' + key);
+    if (!box) return;
+    box.classList.toggle('open');
+    if (box.classList.contains('open')) {
+      el('refine-input-' + key).focus();
+    }
+  }
+
+  function closeRefineBox(key) {
+    const box = el('refine-' + key);
+    if (box) box.classList.remove('open');
+  }
+
+  async function submitRefine(key, btn) {
+    if (!state.topic) {
+      showToast('Please generate the full content first.', 'error');
+      return;
+    }
+
+    const input = el('refine-input-' + key);
+    const instruction = input.value.trim();
+    if (!instruction) {
+      showToast('Please describe what you want changed.', 'error');
+      return;
+    }
+
+    const originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Applying...';
+    startProgress('refine');
+
+    const data = await callGenerateApi('refine', {
+      refineTarget: key,
+      refineInstruction: instruction,
+      context: state.content
+    });
+
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+    finishProgress();
+
+    if (!data || data[key] === undefined) return;
+
+    state.content[key] = data[key];
+    renderField(key, state.content[key]);
+    input.value = '';
+    closeRefineBox(key);
+    showToast('Updated with your instructions!', 'success');
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Variations (3 options for Idea / Hook)                            */
+  /* ---------------------------------------------------------------- */
+
+  async function fetchVariations(section, btn) {
+    if (!state.topic) {
+      showToast('Please generate the full content first.', 'error');
+      return;
+    }
+
+    const kind = section === 'idea_variations' ? 'idea' : 'hook';
+    const box = el('variations-' + kind);
+    const originalLabel = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>';
+    startProgress(section);
+
+    const data = await callGenerateApi(section, { context: state.content });
+
+    btn.disabled = false;
+    btn.innerHTML = originalLabel;
+    finishProgress();
+
+    if (!data || !Array.isArray(data.options)) return;
+
+    box.innerHTML = '';
+    data.options.forEach((optionText) => {
+      const row = document.createElement('div');
+      row.className = 'variation-option';
+
+      const textEl = document.createElement('div');
+      textEl.className = 'variation-option-text';
+      textEl.textContent = optionText;
+
+      const useBtn = document.createElement('button');
+      useBtn.className = 'btn btn-ghost btn-small';
+      useBtn.textContent = 'Use This';
+      useBtn.addEventListener('click', () => {
+        state.content[kind] = optionText;
+        renderField(kind, optionText);
+        box.classList.remove('open');
+        box.innerHTML = '';
+        showToast('Option applied!', 'success');
+      });
+
+      row.appendChild(textEl);
+      row.appendChild(useBtn);
+      box.appendChild(row);
+    });
+
+    box.classList.add('open');
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Copy actions                                                       */
+  /* ---------------------------------------------------------------- */
 
   function copySection(key) {
     const value = state.content[key] || '';
@@ -602,6 +1214,187 @@
     );
   }
 
+  function buildCopyAllText() {
+    const c = state.content;
+    return [
+      `🔥 VIRAL CONTENT IDEA\n${c.idea}`,
+      `🎬 HOOK\n${c.hook}`,
+      `📜 FULL SCRIPT\n${c.script}`,
+      `📌 TITLE\n${c.title}`,
+      `📝 SEO DESCRIPTION\n${c.description}`,
+      `#️⃣ HASHTAGS\n${c.hashtags}`
+    ].join('\n\n---\n\n');
+  }
+
+  copyAllBtn.addEventListener('click', () => {
+    if (!state.topic) {
+      showToast('Please generate content first.', 'error');
+      return;
+    }
+    navigator.clipboard.writeText(buildCopyAllText()).then(
+      () => showToast('All content copied to clipboard!', 'success'),
+      () => showToast('Could not copy. Please copy manually.', 'error')
+    );
+  });
+
+  /* ---------------------------------------------------------------- */
+  /* History (localStorage)                                            */
+  /* ---------------------------------------------------------------- */
+
+  function loadHistoryFromStorage() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveHistoryToStorage(items) {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(items));
+    } catch (e) {
+      // localStorage might be unavailable — fail silently
+    }
+  }
+
+  function formatHistoryDate(iso) {
+    try {
+      return new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function saveToHistory() {
+    const items = loadHistoryFromStorage();
+    const entry = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      topic: state.topic,
+      language: state.language,
+      tone: state.tone,
+      toneSecondary: state.toneSecondary,
+      toneIntensity: state.toneIntensity,
+      platform: state.platform,
+      duration: state.duration,
+      content: state.content,
+      timestamp: new Date().toISOString()
+    };
+    items.unshift(entry);
+    saveHistoryToStorage(items.slice(0, HISTORY_LIMIT));
+    renderHistoryList();
+  }
+
+  function renderHistoryList() {
+    const items = loadHistoryFromStorage();
+    historyCount.textContent = items.length ? `(${items.length})` : '';
+    historyList.innerHTML = '';
+
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className = 'history-empty';
+      empty.textContent = 'No saved generations yet. Your generated content will appear here automatically.';
+      historyList.appendChild(empty);
+      return;
+    }
+
+    items.forEach((item) => {
+      const row = document.createElement('div');
+      row.className = 'history-item';
+
+      const main = document.createElement('div');
+      main.className = 'history-item-main';
+
+      const title = document.createElement('div');
+      title.className = 'history-item-title';
+      title.textContent = item.topic;
+
+      const meta = document.createElement('div');
+      meta.className = 'history-item-meta';
+      const platformPart = item.platform && item.platform !== 'General' ? ` · ${item.platform}` : '';
+      meta.textContent = `${item.language} · ${item.tone}${platformPart} · ${item.duration || ''} · ${formatHistoryDate(item.timestamp)}`;
+
+      main.appendChild(title);
+      main.appendChild(meta);
+
+      const actions = document.createElement('div');
+      actions.className = 'history-item-actions';
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '✕';
+      deleteBtn.title = 'Delete this entry';
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteHistoryItem(item.id);
+      });
+      actions.appendChild(deleteBtn);
+
+      row.appendChild(main);
+      row.appendChild(actions);
+      row.addEventListener('click', () => loadHistoryItem(item.id));
+
+      historyList.appendChild(row);
+    });
+  }
+
+  function deleteHistoryItem(id) {
+    saveHistoryToStorage(loadHistoryFromStorage().filter((i) => i.id !== id));
+    renderHistoryList();
+  }
+
+  function loadHistoryItem(id) {
+    const item = loadHistoryFromStorage().find((i) => i.id === id);
+    if (!item) return;
+
+    topicInput.value = item.topic;
+    languageSelect.value = item.language || 'English';
+    toneSelect.value = item.tone || 'Viral';
+    platformSelect.value = item.platform || 'General';
+    durationSelect.value = item.duration || '30 seconds';
+    toneSecondarySelect.value = item.toneSecondary || '';
+    intensityRow.classList.toggle('active', Boolean(item.toneSecondary));
+    if (item.toneSecondary) {
+      toneIntensityInput.value = item.toneIntensity || 30;
+      intensityValue.textContent = `${toneIntensityInput.value}%`;
+    }
+    topicCounter.textContent = `${topicInput.value.length} / ${MAX_TOPIC_LENGTH} characters`;
+
+    state.topic = item.topic;
+    state.language = item.language;
+    state.tone = item.tone;
+    state.toneSecondary = item.toneSecondary || null;
+    state.toneIntensity = item.toneIntensity || 0;
+    state.platform = item.platform || 'General';
+    state.duration = item.duration || '30 seconds';
+    state.content = { ...item.content };
+
+    emptyState.style.display = 'none';
+    resultsSection.classList.add('visible');
+    renderAll(state.content);
+    updateTags();
+
+    showToast('Loaded from history.', 'success');
+    window.scrollTo({ top: resultsSection.offsetTop - 20, behavior: 'smooth' });
+  }
+
+  historyToggle.addEventListener('click', (e) => {
+    if (e.target === clearHistoryBtn) return;
+    historyList.classList.toggle('open');
+  });
+
+  clearHistoryBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!loadHistoryFromStorage().length) return;
+    if (confirm('Clear all saved history? This cannot be undone.')) {
+      saveHistoryToStorage([]);
+      renderHistoryList();
+      showToast('History cleared.', 'success');
+    }
+  });
+
+  /* ---------------------------------------------------------------- */
+  /* Event wiring                                                       */
+  /* ---------------------------------------------------------------- */
+
   generateBtn.addEventListener('click', generateAll);
 
   document.querySelectorAll('[data-regen]').forEach((btn) => {
@@ -610,6 +1403,22 @@
 
   document.querySelectorAll('[data-copy]').forEach((btn) => {
     btn.addEventListener('click', () => copySection(btn.getAttribute('data-copy')));
+  });
+
+  document.querySelectorAll('[data-refine-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => toggleRefineBox(btn.getAttribute('data-refine-toggle')));
+  });
+
+  document.querySelectorAll('[data-refine-cancel]').forEach((btn) => {
+    btn.addEventListener('click', () => closeRefineBox(btn.getAttribute('data-refine-cancel')));
+  });
+
+  document.querySelectorAll('[data-refine-submit]').forEach((btn) => {
+    btn.addEventListener('click', () => submitRefine(btn.getAttribute('data-refine-submit'), btn));
+  });
+
+  document.querySelectorAll('[data-variations]').forEach((btn) => {
+    btn.addEventListener('click', () => fetchVariations(btn.getAttribute('data-variations'), btn));
   });
 
   topicInput.addEventListener('keydown', (e) => {
@@ -625,7 +1434,9 @@
     const url = 'https://www.canva.com/templates/?query=' + encodeURIComponent(topic);
     window.open(url, '_blank', 'noopener,noreferrer');
   });
+
+  // Initial render
+  renderHistoryList();
 </script>
 </body>
-  </html>
-              
+</html>
