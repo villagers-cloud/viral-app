@@ -38,11 +38,7 @@ const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 // Model fallback chain: primary model first, then fallbacks used automatically
 // if the primary fails outright or exhausts its retries on rate limits.
-const MODEL_CHAIN = [
-  'llama-3.1-70b-versatile',
-  'llama-3.3-70b-versatile',
-  'llama-3.1-8b-instant'
-];
+const MODEL = 'openai/gpt-oss-20b';
 
 /* ------------------------------------------------------------------ */
 /* Validation constants                                                */
