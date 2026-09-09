@@ -1,13 +1,13 @@
 /**
  * Viral Content & Script Generator - Backend
  * Node.js / Express server that securely proxies requests to the
- * Groq API (OpenAI-compatible chat completions endpoint).
+ * Google Gemini API (via Google's OpenAI-compatible endpoint).
  *
- * The GROQ_API_KEY is read from environment variables ONLY.
+ * The GEMINI_API_KEY is read from environment variables ONLY.
  * It is never sent to, or exposed on, the frontend.
  *
  * Features in this file:
- *  - Retry with exponential backoff on Groq 429 rate-limit errors
+ *  - Retry with exponential backoff on Gemini 429 rate-limit errors
  *  - Model fallback chain (tries next model if one fails/exhausts retries)
  *  - In-memory response caching for identical full-generation requests
  *  - Rate limiting on /api/generate (per IP)
@@ -34,12 +34,20 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+// Google's OpenAI-compatible layer — lets us keep the same request/response
+// shape (messages array, chat.completions format) instead of Gemini's native
+// generateContent format.
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
 
 // Model fallback chain: primary model first, then fallbacks used automatically
 // if the primary fails outright or exhausts its retries on rate limits.
-const MODEL = 'openai/gpt-oss-20b';
-
+// gemini-2.5-flash is the stable, well-documented free-tier model; the
+// lite variants are lower-latency/cheaper fallbacks on the same family.
+const MODEL_CHAIN = [
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-2.0-flash-lite'
+];
 
 /* ------------------------------------------------------------------ */
 /* Validation constants                                                */
@@ -313,10 +321,10 @@ Rules:
 }
 
 /* ------------------------------------------------------------------ */
-/* Groq call with retry (429 backoff) + model fallback                 */
+/* Gemini call with retry (429 backoff) + model fallback                */
 /* ------------------------------------------------------------------ */
 
-async function callGroqWithRetryAndFallback(payloadBase) {
+async function callGeminiWithRetryAndFallback(payloadBase) {
   const MAX_RETRIES_PER_MODEL = 2; // extra attempts after the first, on 429 only
   let lastError = null;
 
@@ -325,11 +333,11 @@ async function callGroqWithRetryAndFallback(payloadBase) {
     while (attempt <= MAX_RETRIES_PER_MODEL) {
       try {
         const response = await axios.post(
-          GROQ_API_URL,
+          GEMINI_API_URL,
           { ...payloadBase, model },
           {
             headers: {
-              Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+              Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
               'Content-Type': 'application/json',
               Accept: 'application/json'
             },
@@ -422,9 +430,9 @@ app.post('/api/generate', generateLimiter, async (req, res) => {
       return res.status(400).json({ error: errors[0] });
     }
 
-    if (!process.env.GROQ_API_KEY) {
+    if (!process.env.GEMINI_API_KEY) {
       return res.status(500).json({
-        error: 'Server misconfiguration: GROQ_API_KEY environment variable is not set.'
+        error: 'Server misconfiguration: GEMINI_API_KEY environment variable is not set.'
       });
     }
 
@@ -475,7 +483,7 @@ app.post('/api/generate', generateLimiter, async (req, res) => {
       max_tokens: computeMaxTokens(section, duration, refineTarget)
     };
 
-    const { response } = await callGroqWithRetryAndFallback(payloadBase);
+    const { response } = await callGeminiWithRetryAndFallback(payloadBase);
     const rawContent = response.data?.choices?.[0]?.message?.content;
 
     if (!rawContent) {
@@ -501,7 +509,7 @@ app.post('/api/generate', generateLimiter, async (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', keyConfigured: Boolean(process.env.GROQ_API_KEY) });
+  res.json({ status: 'ok', keyConfigured: Boolean(process.env.GEMINI_API_KEY) });
 });
 
 // Fallback: serve the frontend for any other GET route.
@@ -511,7 +519,7 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Viral Content Generator running at http://localhost:${PORT}`);
-  if (!process.env.GROQ_API_KEY) {
-    console.warn('⚠️  Warning: GROQ_API_KEY is not set. Set it in a .env file or your environment.');
+  if (!process.env.GEMINI_API_KEY) {
+    console.warn('⚠️  Warning: GEMINI_API_KEY is not set. Set it in a .env file or your environment.');
   }
 });
