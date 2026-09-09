@@ -45,9 +45,9 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/
 // gemini-2.5-flash is the stable, well-documented free-tier model; the
 // lite variants are lower-latency/cheaper fallbacks on the same family.
 const MODEL_CHAIN = [
-  'gemini-2.5-flash',
-  'gemini-2.5-flash-lite',
-  'gemini-2.0-flash-lite'
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b',
+  'gemini-1.5-pro'
 ];
 
 /* ------------------------------------------------------------------ */
@@ -84,7 +84,7 @@ const REFINE_TARGETS = new Set(['idea', 'hook', 'script', 'title', 'description'
 
 // If deployed behind a reverse proxy (Render, Heroku, Vercel, etc.),
 // uncomment the line below so express-rate-limit reads the real client IP.
-// app.set('trust proxy', 1);
+app.set('trust proxy', 1);
 
 const generateLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
