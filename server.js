@@ -44,6 +44,8 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/
 // if the primary fails outright or exhausts its retries on rate limits.
 // gemini-2.5-flash is the stable, well-documented free-tier model; the
 // lite variants are lower-latency/cheaper fallbacks on the same family.
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
+
 const MODEL_CHAIN = [
   'gemini-1.5-flash',
   'gemini-1.5-flash-8b',
