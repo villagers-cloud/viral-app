@@ -490,7 +490,15 @@
             <option value="Urdu">Urdu</option>
           </select>
         </div>
-        
+        <div>
+          <label for="tone">Tone</label>
+          <select id="tone">
+            <option value="Viral" selected>Viral</option>
+            <option value="Funny">Funny</option>
+            <option value="Professional">Professional</option>
+            <option value="Educational">Educational</option>
+          </select>
+        </div>
       </div>
 
       <div class="field-row">
@@ -516,6 +524,7 @@
           </select>
         </div>
       </div>
+
       <div style="margin-top:16px;">
         <label for="toneSecondary">Blend With (optional)</label>
         <select id="toneSecondary">
@@ -703,7 +712,7 @@
 
     </section>
 
-    <p class="footer-note">Powered by Groq · llama-3.1-70b-versatile</p>
+    <p class="footer-note">Powered by Google Gemini · gemini-2.5-flash</p>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -855,7 +864,8 @@
     }
   }
 
-  /* ---------------------------------------------------------------- */
+  /*
+  ---------------------------------------------------------------- */
   /* Form field wiring                                                  */
   /* ---------------------------------------------------------------- */
 
@@ -994,7 +1004,8 @@
     }
   }
 
-  /* ---------------------------------------------------------------- */
+  /* 
+  ---------------------------------------------------------------- */
   /* Generate (full)                                                    */
   /* ---------------------------------------------------------------- */
 
@@ -1090,7 +1101,7 @@
 
   function toggleRefineBox(key) {
     const box = el('refine-' + key);
-    if (!box) return;
+        if (!box) return;
     box.classList.toggle('open');
     if (box.classList.contains('open')) {
       el('refine-input-' + key).focus();
@@ -1192,7 +1203,8 @@
     box.classList.add('open');
   }
 
-  /* ---------------------------------------------------------------- */
+  /* 
+  ---------------------------------------------------------------- */
   /* Copy actions                                                       */
   /* ---------------------------------------------------------------- */
 
@@ -1328,7 +1340,8 @@
   }
 
   function deleteHistoryItem(id) {
-    saveHistoryToStorage(loadHistoryFromStorage().filter((i) => i.id !== id));
+
+  saveHistoryToStorage(loadHistoryFromStorage().filter((i) => i.id !== id));
     renderHistoryList();
   }
 
@@ -1431,3 +1444,6 @@
 </script>
 </body>
 </html>
+
+    
+    
