@@ -2,21 +2,6 @@
  * Viral Content & Script Generator - Backend
  * Node.js / Express server that securely proxies requests to the
  * Google Gemini API (via Google's OpenAI-compatible endpoint).
- *
- * The GEMINI_API_KEY is read from environment variables ONLY.
- * It is never sent to, or exposed on, the frontend.
- *
- * Features in this file:
- *  - Retry with exponential backoff on Gemini 429 rate-limit errors
- *  - Model fallback chain (tries next model if one fails/exhausts retries)
- *  - In-memory response caching for identical full-generation requests
- *  - Rate limiting on /api/generate (per IP)
- *  - Input validation & length limits
- *  - Platform-specific guidance (Instagram Reels / YouTube Shorts / TikTok)
- *  - Video duration guidance (controls script length/pacing)
- *  - Tone blending (primary + optional secondary tone with intensity)
- *  - "Refine with instructions" — freeform edit instruction for one field
- *  - "Variations" — 3 alternative options for Idea or Hook
  */
 
 require('dotenv').config();
@@ -28,22 +13,13 @@ const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
-app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Google's OpenAI-compatible layer — lets us keep the same request/response
-// shape (messages array, chat.completions format) instead of Gemini's native
-// generateContent format.
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
-
-// Model fallback chain: primary model first, then fallbacks used automatically
-// if the primary fails outright or exhausts its retries on rate limits.
-// gemini-2.5-flash is the stable, well-documented free-tier model; the
-// lite variants are lower-latency/cheaper fallbacks on the same family.
+// Google's OpenAI-compatible layer
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
 
 const MODEL_CHAIN = [
@@ -84,25 +60,23 @@ const REFINE_TARGETS = new Set(['idea', 'hook', 'script', 'title', 'description'
 /* Rate limiting                                                       */
 /* ------------------------------------------------------------------ */
 
-// If deployed behind a reverse proxy (Render, Heroku, Vercel, etc.),
-// uncomment the line below so express-rate-limit reads the real client IP.
 app.set('trust proxy', 1);
 
 const generateLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 40, // 40 requests per IP per window (covers regenerate/refine/variations too)
+  max: 40, // 40 requests per IP per window
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: "You're generating too quickly. Please wait a few minutes and try again." }
 });
 
 /* ------------------------------------------------------------------ */
-/* In-memory response cache (full-generation requests only)            */
+/* In-memory response cache                                            */
 /* ------------------------------------------------------------------ */
 
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const CACHE_TTL_MS = 10 * 60 * 1000;
 const CACHE_MAX_ENTRIES = 500;
-const responseCache = new Map(); // key -> { data, expiresAt }
+const responseCache = new Map();
 
 function getCacheKey(payload) {
   return crypto.createHash('sha256').update(JSON.stringify(payload)).digest('hex');
@@ -328,7 +302,7 @@ Rules:
 /* ------------------------------------------------------------------ */
 
 async function callGeminiWithRetryAndFallback(payloadBase) {
-  const MAX_RETRIES_PER_MODEL = 2; // extra attempts after the first, on 429 only
+  const MAX_RETRIES_PER_MODEL = 2;
   let lastError = null;
 
   for (const model of MODEL_CHAIN) {
@@ -356,13 +330,11 @@ async function callGeminiWithRetryAndFallback(payloadBase) {
           const retryAfterHeader = err.response?.headers?.['retry-after'];
           const backoffMs = retryAfterHeader
             ? parseFloat(retryAfterHeader) * 1000
-            : 800 * Math.pow(2, attempt); // 800ms, 1600ms, ...
+            : 800 * Math.pow(2, attempt);
           await new Promise((resolve) => setTimeout(resolve, backoffMs));
           attempt += 1;
           continue;
         }
-
-        // Non-429 error, or retries exhausted on this model -> try next model.
         break;
       }
     }
@@ -515,14 +487,12 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', keyConfigured: Boolean(process.env.GEMINI_API_KEY) });
 });
 
-// Fallback: serve the frontend for any other GET route.
+// Fallback: serve the frontend
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
   console.log(`🚀 Viral Content Generator running at http://localhost:${PORT}`);
-  if (!process.env.GEMINI_API_KEY) {
-    console.warn('⚠️  Warning: GEMINI_API_KEY is not set. Set it in a .env file or your environment.');
-  }
 });
+  
