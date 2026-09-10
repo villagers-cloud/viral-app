@@ -113,8 +113,8 @@ app.post('/api/generate', generateLimiter, async (req, res) => {
     if (cacheKey && getFromCache(cacheKey)) return res.json(getFromCache(cacheKey));
 
     // 🔥 NATIVE GEMINI API URL (Guaranteed to work) 🔥
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
-    
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
     const response = await axios.post(
       API_URL,
       {
