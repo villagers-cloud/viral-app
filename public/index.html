@@ -316,10 +316,12 @@
         <div>
           <label for="language">Language</label>
           <select id="language">
-            <option value="English">English</option>
-            <option value="Gujarati" selected>Gujarati</option>
+            <option value="English" selected>English</option>
+            <option value="Gujarati">Gujarati</option>
             <option value="Hindi">Hindi</option>
             <option value="Marathi">Marathi</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
           </select>
         </div>
         <div>
@@ -328,6 +330,27 @@
             <option value="Instagram Reels" selected>Instagram Reels</option>
             <option value="YouTube Shorts">YouTube Shorts</option>
             <option value="TikTok">TikTok</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div>
+          <label for="tone">Tone / Vibe</label>
+          <select id="tone">
+            <option value="Conversational" selected>Conversational & Relatable</option>
+            <option value="Humorous">Humorous & Funny</option>
+            <option value="Professional">Professional & Educational</option>
+            <option value="Inspirational">Inspirational & Motivational</option>
+            <option value="Controversial">Edgy & Controversial (Hook Heavy)</option>
+          </select>
+        </div>
+        <div>
+          <label for="duration">Target Duration</label>
+          <select id="duration">
+            <option value="15 seconds">15 seconds (Fast Paced)</option>
+            <option value="30 seconds" selected>30 seconds (Standard)</option>
+            <option value="60 seconds">60 seconds (In-depth)</option>
           </select>
         </div>
       </div>
@@ -439,6 +462,8 @@
           topic: topic,
           language: el('language').value,
           platform: el('platform').value,
+          tone: el('tone').value,
+          duration: el('duration').value,
           section: 'all'
         })
       });
