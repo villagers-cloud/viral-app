@@ -436,9 +436,21 @@
   }
 
   // Format Hashtags cleanly
-  function formatHashtags(text) {
+  function formatHashtags(text, containerId) {
+    const container = el(containerId);
+    container.innerHTML = ''; // Clear previous content safely (no user input)
+
     const tags = String(text || '').split(/\s+/).filter(Boolean);
-    return tags.map(tag => `<span class="hashtag-chip">${tag.startsWith('#') ? tag : '#' + tag}</span>`).join('');
+
+    const fragment = document.createDocumentFragment();
+    tags.forEach(tag => {
+      const span = document.createElement('span');
+      span.className = 'hashtag-chip';
+      span.textContent = tag.startsWith('#') ? tag : '#' + tag;
+      fragment.appendChild(span);
+    });
+
+    container.appendChild(fragment);
   }
 
   // Main API Call
@@ -478,7 +490,7 @@
       el('out-hook').textContent = data.hook;
       el('out-script').textContent = data.script;
       el('out-title').textContent = data.title;
-      el('out-hashtags').innerHTML = formatHashtags(data.hashtags);
+      formatHashtags(data.hashtags, 'out-hashtags');
       
       showToast('Content Generated Successfully! 🎉');
 
