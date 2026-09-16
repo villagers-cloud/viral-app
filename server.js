@@ -110,7 +110,8 @@ app.post('/api/generate', generateLimiter, async (req, res) => {
     }
 
     const cacheKey = section === 'all' ? getCacheKey({ topic, language, tone: body.tone, plat: body.platform, dur: body.duration }) : null;
-    if (cacheKey && getFromCache(cacheKey)) return res.json(getFromCache(cacheKey));
+    let cachedData;
+    if (cacheKey && (cachedData = getFromCache(cacheKey))) return res.json(cachedData);
 
     // 🔥 NATIVE GEMINI API URL (Guaranteed to work) 🔥
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
