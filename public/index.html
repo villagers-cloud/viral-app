@@ -493,7 +493,14 @@
 
   // Character Counter
   el('topic').addEventListener('input', (e) => {
-    el('topicCounter').textContent = `${e.target.value.length} / 200`;
+    const len = e.target.value.length;
+    const counterEl = el('topicCounter');
+    counterEl.textContent = `${len} / 200`;
+    if (len >= 180) {
+      counterEl.classList.add('warn');
+    } else {
+      counterEl.classList.remove('warn');
+    }
   });
 </script>
 </body>
